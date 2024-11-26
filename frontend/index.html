@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Names App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            margin: 0;
+        }
+
+        .message {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 80%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #007BFF;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #loading {
+            font-size: 1.2em;
+            color: #007BFF;
+            display: none;
+        }
+
+        #names-list {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .name-item {
+            background: #f9f9f9;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .name-item:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="message">
+        <h1>Welcome to the Names App!</h1>
+        <p>This is a simple backend that displays a list of names when requested. You can fetch the names list by clicking the button below.</p>
+        <button id="loadNamesBtn">Load Names</button>
+        <div id="loading">Loading...</div>
+        <ul id="names-list"></ul>
+    </div>
+
+    <script>
+        document.getElementById('loadNamesBtn').addEventListener('click', function() {
+            const loadingIndicator = document.getElementById('loading');
+            const namesList = document.getElementById('names-list');
+            
+            // Show loading spinner while fetching data
+            loadingIndicator.style.display = 'block';
+            namesList.innerHTML = ''; // Clear previous names
+            
+            fetch('http://localhost:5000/api/names')  // Fetch from the backend on port 5000
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    loadingIndicator.style.display = 'none';
+                    
+                    data.forEach(name => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = name;
+                        listItem.classList.add('name-item');
+                        namesList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    // Handle any errors (e.g., network error)
+                    loadingIndicator.style.display = 'none';
+                    alert('Error fetching names: ' + error.message);
+                });
+        });
+    </script>
+
+</body>
+</html>

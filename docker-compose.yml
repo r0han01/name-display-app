@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend  # Path to the backend directory
+    container_name: flask-backend
+    ports:
+      - "5000:5000"  # Map backend port 5000
+    networks:
+      - app-network
+    environment:
+      - FLASK_ENV=development
+
+  frontend:
+    build:
+      context: ./frontend  # Path to the frontend directory
+    container_name: node-frontend
+    ports:
+      - "3000:3000"  # Map frontend port 3000
+    networks:
+      - app-network
+    depends_on:
+      - backend  # Ensure backend is ready before starting frontend
+
+networks:
+  app-network:
+    driver: bridge
